@@ -1,0 +1,22 @@
+Voom::Presenters.define(:simple_cache_key) do
+  cache :remember_me
+end
+
+Voom::Presenters.define(:complex_child_cache_key) do
+  helpers do
+    def cache_object
+      OpenStruct.new(cache_key: 'wild')
+    end
+
+    def cache_objects
+      [
+        OpenStruct.new(cache_key: 'abc'),
+        OpenStruct.new(cache_key: '123'),
+      ]
+    end
+  end
+
+  table do
+    cache [:table, cache_object, cache_objects]
+  end
+end

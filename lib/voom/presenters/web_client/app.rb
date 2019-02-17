@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'redis-sinatra'
 require 'uri'
 require 'redcarpet'
 require "dry/inflector"
@@ -17,6 +18,8 @@ module Voom
         set :router_, WebClient::Router
         set :bind, '0.0.0.0'
         set :views, Proc.new {File.join(root, "views", ENV['VIEW_ENGINE'] || 'mdc')}
+        set :erb, outvar: '@output_buffer'
+        set :cache, Sinatra::Cache::RedisStore.new(ENV['REDIS_URL'])
         configure do
           enable :logging
         end
@@ -102,6 +105,18 @@ module Voom
             (<<~CSS)
               <link rel="stylesheet" href="#{env['SCRIPT_NAME']}#{path.sub('public/','')}">
             CSS
+          end
+
+          def cache(comp, &block)
+            if comp.respond_to?(:cache_key) && (key = comp.cache_key)
+              if data = settings.cache.read(key)
+                @output_buffer << data
+              else
+                settings.cache.write(key, yield)
+              end
+            else
+              yield
+            end
           end
         end
 

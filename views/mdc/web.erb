@@ -1,1 +1,3 @@
-<%= erb :"components/render", :locals => {:components => @pom.components, :scope=> nil} %>
+<% cache(@pom) do %>
+  <%= erb :"components/render", :locals => {:components => @pom.components, :scope=> nil} %>
+<% end %>

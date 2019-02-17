@@ -1,4 +1,6 @@
 <% components.each_with_index do |comp, index| %>
-  <%= erb :"components#{scope ? "/#{scope}" : nil}/#{comp.type}", :locals => {comp: comp,
+  <% cache(comp) do %>
+    <%= erb :"components#{scope ? "/#{scope}" : nil}/#{comp.type}", :locals => {comp: comp,
                                                                               components: components, index: index} %>
+  <% end %>
 <% end %>
