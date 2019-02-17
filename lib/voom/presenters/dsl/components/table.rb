@@ -4,12 +4,15 @@ require 'voom/presenters/dsl/components/mixins/tooltips'
 require 'voom/presenters/dsl/components/mixins/chips'
 require 'voom/presenters/dsl/components/mixins/selects'
 require 'voom/presenters/dsl/components/mixins/icons'
+require 'voom/presenters/dsl/components/mixins/cacheable'
 
 module Voom
   module Presenters
     module DSL
       module Components
         class Table < Base
+          include Mixins::Cacheable
+
           attr_accessor :header, :rows, :selectable
 
           def initialize(**attribs_, &block)
